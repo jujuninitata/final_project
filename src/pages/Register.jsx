@@ -15,10 +15,35 @@ import {
   Link,
 } from '@chakra-ui/react';
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
+import axios from 'axios';
 
 export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState('');
+  const [nip, setNip] = useState('');
+  const [userid, setUserid] = useState('');
+  const [password, setPassword] = useState(''); 
+  const [confirmPassword, setConfpassword] = useState(''); 
+  const navigate = useNavigate;
+  const [msg, setMsg]=useState('')
+  const daftar = async(e) => {
+    e.preventDefault();
+    try
+    {
+      await axios.post("http://localhost:8000/api/v1/auth/register",{email,nip,userid, password,confirmPassword})
+      navigate ("/login")
+    }
+    catch(error)
+    {
+        if(error.respose)
+        {
+          setMsg(error.respose.data.msg)
+        }
+    }
+    
+  }
 
   return (
     <Flex minH={'100vh'} align={'center'} justify={'center'} bg={useColorModeValue('gray.50', 'gray.800')}>
@@ -29,6 +54,7 @@ export default function Register() {
           </Heading>
         </Stack>
         <Box rounded={'lg'} bg={useColorModeValue('white', 'gray.700')} boxShadow={'lg'} p={8}>
+          <p className='has-text-centered'>{msg}</p>
           <Stack spacing={4}>
             <HStack>
               <Box>
@@ -46,12 +72,32 @@ export default function Register() {
             </HStack>
             <FormControl id='email' isRequired>
               <FormLabel>Email address</FormLabel>
-              <Input type='email' />
+              <Input type='email' 
+              value={email} onChange={(e) => setEmail(e.target.value)}/>
+            </FormControl>
+            <FormControl id='nip' isRequired>
+              <FormLabel>NIP</FormLabel>
+              <Input type='text' value={nip} onChange={(e) => setNip(e.target.value)}/>
+            </FormControl>
+            <FormControl id='userid' isRequired>
+              <FormLabel>User ID</FormLabel>
+              <Input type='text' value={userid} onChange={(e) => setUserid(e.target.value)} />
             </FormControl>
             <FormControl id='password' isRequired>
               <FormLabel>Password</FormLabel>
               <InputGroup>
-                <Input type={showPassword ? 'text' : 'password'} />
+                <Input type={showPassword ? 'text' : 'password'} value={password} onChange={(e) => setPassword(e.target.value)} />
+                <InputRightElement h={'full'}>
+                  <Button variant={'ghost'} onClick={() => setShowPassword((showPassword) => !showPassword)}>
+                    {showPassword ? <ViewIcon /> : <ViewOffIcon />}
+                  </Button>
+                </InputRightElement>
+              </InputGroup>
+            </FormControl>
+            <FormControl id='confpassword' isRequired>
+              <FormLabel>Confirm Password</FormLabel>
+              <InputGroup>
+                <Input type={showPassword ? 'text' : 'confpassword'} value={confirmPassword} onChange={(e) => setConfpassword(e.target.value)}/>
                 <InputRightElement h={'full'}>
                   <Button variant={'ghost'} onClick={() => setShowPassword((showPassword) => !showPassword)}>
                     {showPassword ? <ViewIcon /> : <ViewOffIcon />}
@@ -60,7 +106,7 @@ export default function Register() {
               </InputGroup>
             </FormControl>
             <Stack spacing={10} pt={2}>
-              <Button
+              <Button onClick={daftar}
                 loadingText='Submitting'
                 size='lg'
                 bg={'blue.400'}

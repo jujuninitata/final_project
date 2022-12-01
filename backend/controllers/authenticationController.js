@@ -16,13 +16,13 @@ const getuser = async (req, res) =>
 
     const register = async (req, res) => 
 {
-    const { name, email,nip,userid, password,confirmPassword } = req.body;
+    const { email,nip,userid, password,confirmPassword } = req.body;
 
     //validasi user ada atau tidak
     const checkData = await db.profile.findOne({ where: { nip,email,userid } })
     console.log(checkData)
     if(!checkData){
-        return res.status(422).json({ message: "NIP tidak ditemukan!"})
+        return res.status(400).json({ message: "user anda tidak terdaftar!"})
     }
     //validasi user ada atau tidak
     const validateEmail = await db.user.findOne({ where: { email}})
@@ -35,11 +35,16 @@ const getuser = async (req, res) =>
     }
     const salt = await bcrypt.genSalt();
     const hashPassword = await bcrypt.hash(password, salt);
-    const resAdd = await db.user.create({ userid, email, password: hashPassword });
+    try{
+        const resAdd = await db.user.create({ userid, email, password: hashPassword });
     return res.status(201).json({
         message: "register data successfully!",
         data: resAdd,
     })
+    }catch(error)
+    {
+        console.log(error);
+    }
 } 
 
 const login = async (req, res) => {
@@ -47,12 +52,12 @@ const login = async (req, res) => {
     const checkData = await db.user.findOne({ where: { email } })
 
     if(!checkData){
-        return res.status(422).json({ message: "email or password not found!"})
+        return res.status(400).json({ message: "email or password not found!"})
     }
     
     const comparePassword = await bcrypt.compare(password, checkData.password);
     if(!comparePassword) {
-        return res.status(422).json({ message: "email or password not found!"})
+        return res.status(400).json({ message: "Password Salah!"})
     }
 
     const token = jwt.sign({ id: checkData.id, email: checkData.email, password: checkData.password}, process.env.ACCESS_TOKEN_SECRET);

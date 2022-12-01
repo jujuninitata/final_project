@@ -14,12 +14,15 @@ import {
 } from '@chakra-ui/react';
 import { Link as RouterLink, redirect, useNavigate } from 'react-router-dom';
 import axios from "axios"
+import { useState } from 'react';
 
 export default function Login() {
   const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const login = async() => {
-    const data = await axios("http://localhost:8000/api/v1/auth/login")
-    
+    const data = await axios.post("http://localhost:8000/api/v1/auth/login",{email, password})
+    console.log(data);
   }
   return (
     <Flex minH={'100vh'} align={'center'} justify={'center'} bg={useColorModeValue('gray.50', 'gray.800')}>
@@ -31,11 +34,11 @@ export default function Login() {
           <Stack spacing={4}>
             <FormControl id='email'>
               <FormLabel>Email address</FormLabel>
-              <Input type='email' />
+              <Input type='email' value={email} onChange={(e) => setEmail(e.target.value)}/>
             </FormControl>
             <FormControl id='password'>
               <FormLabel>Password</FormLabel>
-              <Input type='password' />
+              <Input type='password' value={password} onChange={(e) => setPassword(e.target.value)}/>
             </FormControl>
             <Stack spacing={10}>
               <Stack direction={{ base: 'column', sm: 'row' }} align={'start'} justify={'space-between'}>
