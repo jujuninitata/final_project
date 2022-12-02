@@ -14,7 +14,7 @@ import {
   useColorModeValue,
   Link,
 } from '@chakra-ui/react';
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import axios from 'axios';
@@ -26,24 +26,40 @@ export default function Register() {
   const [userid, setUserid] = useState('');
   const [password, setPassword] = useState(''); 
   const [confirmPassword, setConfpassword] = useState(''); 
-  const navigate = useNavigate;
+  const navigate = useNavigate();
   const [msg, setMsg]=useState('')
-  const daftar = async(e) => {
-    e.preventDefault();
+
+  // const daftar = async(e) => 
+  // {
+  //   e.preventDefault();
+  //   const login = await axios.post("http://localhost:8000/api/v1/auth/register",{email,nip,userid, password,confirmPassword})
+  //   navigate ("/login")
+  //   console.log(login.response.status)
+  //   if(login.response.status===400)
+  //       {
+  //         setMsg(login.response.data.message)
+  //       }   
+  // }
+  
+  const daftar = async(e) => 
+  {
     try
     {
-      await axios.post("http://localhost:8000/api/v1/auth/register",{email,nip,userid, password,confirmPassword})
+      e.preventDefault();
+      const login = await axios.post("http://localhost:8000/api/v1/auth/register",{email,nip,userid, password,confirmPassword})
       navigate ("/login")
     }
-    catch(error)
-    {
-        if(error.respose)
+    catch(error){
+      // console.log(error)
+      if(error.response.status===400)
         {
-          setMsg(error.respose.data.msg)
-        }
+          setMsg(error.response.data.message)
+        }   
     }
-    
   }
+  
+  useEffect(()=>{},[msg])
+
 
   return (
     <Flex minH={'100vh'} align={'center'} justify={'center'} bg={useColorModeValue('gray.50', 'gray.800')}>
@@ -54,8 +70,9 @@ export default function Register() {
           </Heading>
         </Stack>
         <Box rounded={'lg'} bg={useColorModeValue('white', 'gray.700')} boxShadow={'lg'} p={8}>
-          <p className='has-text-centered'>{msg}</p>
+        
           <Stack spacing={4}>
+          <p className='has-text-centered'>{msg}</p>
             <HStack>
               <Box>
                 <FormControl id='firstName' isRequired>
@@ -119,7 +136,7 @@ export default function Register() {
             </Stack>
             <Stack pt={6}>
               <Text align={'center'}>
-                Already a user? <Link color={'blue.400'}>Login</Link>
+                Already a user? <Link color={'blue.400'} href="/login">Login</Link>
               </Text>
             </Stack>
           </Stack>

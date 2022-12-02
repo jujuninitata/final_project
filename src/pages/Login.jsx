@@ -43,7 +43,7 @@ export default function Login() {
             <Stack spacing={10}>
               <Stack direction={{ base: 'column', sm: 'row' }} align={'start'} justify={'space-between'}>
                 <Checkbox>Remember me</Checkbox>
-                <Link color={'blue.400'}>Forgot password?</Link>
+                <Link color={'blue.400'}href="/forgotpassword">Forgot password?</Link>
               </Stack>
               {/* <Link style={{ textDecoration: 'none' }} as={RouterLink} to={'/home'}> */}
               <Button
@@ -58,10 +58,15 @@ export default function Login() {
               {/* </Link> */}
             </Stack>
             <Stack spacing={10}>
+            <Stack direction={{ base: 'column', sm: 'row' }} align={'start'} justify={'space-between'}>
+                <Text>Don't Have an Acoount</Text>
+                <Link color={'blue.400'}href="/register">Create Account</Link>
+               
+              </Stack>
               <Stack align={'center'}>
+                
                 <Text>Or</Text>
               </Stack>
-              
               <Button
                 onClick={() => navigate('/loginGoogle')}
                 bg={'blue.400'}

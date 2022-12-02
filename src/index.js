@@ -17,6 +17,7 @@ import Diklat from './pages/Diklat';
 import Izin from './pages/Izin';
 import Cuti from './pages/Cuti';
 import Lembur from './pages/Lembur';
+import ForgotPassword from './pages/ForgotPassword';
 
 const theme = extendTheme({
   colors: {
@@ -47,6 +48,10 @@ const router = createBrowserRouter([
   {
     path: '/register',
     element: <Register />,
+  },
+  {
+    path: '/forgotpassword',
+    element: <ForgotPassword />,
   },
   {
     path: '/login',
